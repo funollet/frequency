@@ -6,34 +6,35 @@ import time
 import threading
 
 
-def ding_wait():
-    threading.Timer(1, ding).start()
+class Ding():
 
-def ding():
-    print "ding"
-    time.sleep(0.2)
-    print "dong"
-    ding_wait()
+    def wait(self):
+        threading.Timer(1, self.run).start()
 
-
-
-def tilin_wait():
-    t = threading.Timer(3, tilin).start()
-
-def tilin():
-    print "   tilin"
-    time.sleep(0.5)
-    print "   tolon"
-    tilin_wait()
+    def run(self):
+        print "ding"
+        time.sleep(0.2)
+        print "dong"
+        self.wait()
 
 
+class Tilin():
 
+    def wait(self):
+        threading.Timer(3, self.run).start()
+
+    def run(self):
+        print "   tilin"
+        time.sleep(0.5)
+        print "   tolon"
+        self.wait()
 
 
 
 def main():
-    ding_wait()
-    tilin_wait()
+    Tilin().wait()
+    Ding().wait()
+
 
 
 if __name__ == '__main__':
