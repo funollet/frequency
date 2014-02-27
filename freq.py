@@ -5,45 +5,35 @@
 import time
 import threading
 
-class Freq:
-    """Execute a function if elapsed time > period.
-    """
 
-    def __init__(self, period):
-        self.origin = time.time()
-        self.period = period
+def ding_wait():
+    threading.Timer(1, ding).start()
 
-
-    def regular(self):
-        lapse = time.time() - self.origin
-        if lapse > self.period:
-            self.origin = time.time()
-            self.callback()
+def ding():
+    print "ding"
+    time.sleep(0.2)
+    print "dong"
+    ding_wait()
 
 
-    def callback(self):
-        pass
+
+def tilin_wait():
+    t = threading.Timer(3, tilin).start()
+
+def tilin():
+    print "   tilin"
+    time.sleep(0.5)
+    print "   tolon"
+    tilin_wait()
 
 
-class Ding(Freq):
-    def callback(self):
-        print 'ding'
 
-class Dong(Freq):
-    def callback(self):
-        print 'DONG!!!!'
 
 
 
 def main():
-    every_second = Ding(1)
-    every_three = Dong(3)
-
-    while(True):
-        time.sleep(0.05)
-        every_second.regular()
-        every_three.regular()
-
+    ding_wait()
+    tilin_wait()
 
 
 if __name__ == '__main__':
