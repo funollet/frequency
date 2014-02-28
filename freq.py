@@ -2,7 +2,6 @@
 # freq.py
 # https://xkcd.com/1331/
 
-import time
 import threading
 
 
@@ -14,6 +13,9 @@ class OnOff():
     """Cycles running two provided functions with a configurable period.
     Works in its own thread, so the main program is isolated from sleep()
     or blocking operations.
+
+    wait() and run() create an endless loop out of the main thread.
+    Call wait() to start the loop.
     """
 
     def __init__(self, period, on, off, active_time=ACTIVE_TIME):
@@ -38,13 +40,10 @@ class OnOff():
 
 
     def run(self):
-        """Run on(), sleep, run off(), call run().
-
-        wait() and run() create an endless loop in its own thread.
+        """Run on(), run off() after a period (in another thread), call run().
         """
         self.on()
-        time.sleep(self.active_time)
-        self.off()
+        threading.Timer(self.active_time, self.off).start()
         self.wait()
 
 
