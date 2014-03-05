@@ -2,72 +2,41 @@
 # freq.py
 # https://xkcd.com/1331/
 
-import threading
+from apscheduler.scheduler import Scheduler
+from datetime import datetime, timedelta
+import atexit
 
 
+SECONDS_UP = 0.5
 
-ACTIVE_TIME=0.5     # default time between on() and off() (in seconds)
+sched = Scheduler(daemon=True)
 
-
-class OnOff():
-    """Cycles running two provided functions with a configurable period.
-    Works in its own thread, so the main program is isolated from sleep()
-    or blocking operations.
-
-    wait() and run() create an endless loop out of the main thread.
-    Call wait() to start the loop.
-    """
-
-    def __init__(self, period, on, off, active_time=ACTIVE_TIME):
-        """Initialize class attributes.
-
-        Arguments:
-            period:      duration of service in 'off' status (seconds)
-            on:          funtion called to activate service
-            off:         funtion called to deactivate service
-            active_time: (optional) duration of service in 'on' status (seconds)
-        """
-        self.period = period
-        self.on = on
-        self.off = off
-        self.active_time = active_time
-
-
-    def wait(self):
-        """Call run() after 'period' in a new thread.
-        """
-        threading.Timer(self.period, self.run).start()
-
-
-    def run(self):
-        """Run on(), run off() after a period (in another thread), call run().
-        """
-        self.on()
-        threading.Timer(self.active_time, self.off).start()
-        self.wait()
-
-
-############################################################
 
 def ding():
     print "ding"
+    sched.add_date_job(dong, datetime.now() + timedelta(0, SECONDS_UP, 0))
 
 def dong():
     print "dong"
 
+
 def tilin():
     print "   tilin"
+    sched.add_date_job(tolon, datetime.now() + timedelta(0, SECONDS_UP, 0))
 
 def tolon():
     print "   tolon"
 
 
 def main():
-    # Print 'ding' and 'dong' every second.
-    OnOff(1, ding, dong).wait()
-    # Print 'tilin' and 'tolon' every 3 seconds.
-    OnOff(3, tilin, tolon).wait()
 
+    atexit.register(lambda: sched.shutdown(wait=False))
+
+    sched.add_interval_job(ding, seconds=1)
+    sched.add_interval_job(tilin, seconds=3)
+    sched.start()
+    while True:
+        pass
 
 
 if __name__ == '__main__':
