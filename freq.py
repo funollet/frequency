@@ -8,24 +8,29 @@ import atexit
 
 
 SECONDS_UP = 0.5
+DEBUG = True
 
 sched = Scheduler(daemon=True)
 
+def log(msg):
+    if DEBUG:
+        print '%s: %s' % (datetime.now(), msg)
+
 
 def ding():
-    print "ding"
+    log("ding")
     sched.add_date_job(dong, datetime.now() + timedelta(0, SECONDS_UP, 0))
 
 def dong():
-    print "dong"
+    log("dong")
 
 
 def tilin():
-    print "   tilin"
+    log("   tilin")
     sched.add_date_job(tolon, datetime.now() + timedelta(0, SECONDS_UP, 0))
 
 def tolon():
-    print "   tolon"
+    log("   tolon")
 
 
 def main():
